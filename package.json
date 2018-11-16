@@ -1,0 +1,32 @@
+{
+  "name": "evo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "Evo.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vDelite/Evo.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vDelite/Evo/issues"
+  },
+  "homepage": "https://github.com/vDelite/Evo#readme",
+  "dependencies": {
+    "discord.js": "github:hydrabolt/discord.js",
+    "emoji-aware": "^3.0.4",
+    "enmap": "^4.3.3",
+    "enmap-level": "^2.1.0",
+    "moment": "^2.22.2",
+    "sqlite3": "^4.0.3"
+  },
+  "devDependencies": {
+    "eslint": "^5.8.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.14.0"
+  }
+}
