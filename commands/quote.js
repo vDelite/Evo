@@ -21,7 +21,7 @@ exports.conf = {
   enabled: true,
   guildOnly: true,
   aliases: ['q'],
-  permLevel: 'User'
+  permLevel: 'User',
   requiredPermissions: ['EMBED_LINKS']
 }
 

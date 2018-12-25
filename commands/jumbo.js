@@ -17,7 +17,7 @@ exports.run = async (client, message, args) => {
       await message.channel.send({ files: [{ attachment: URL, name: 'emote.png' }] })
     }
   } catch (error) {
-    if (error.message.includes('Cannot read property') {
+    if (error.message.includes('Cannot read property')) {
       message.channel.send('Provide an emote to jumbo.')
     }
   }

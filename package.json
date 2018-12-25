@@ -17,12 +17,18 @@
   },
   "homepage": "https://github.com/vDelite/Evo#readme",
   "dependencies": {
+    "color-thief": "^2.2.3",
     "discord.js": "github:hydrabolt/discord.js",
     "emoji-aware": "^3.0.4",
     "enmap": "^4.3.3",
     "enmap-level": "^2.1.0",
     "moment": "^2.22.2",
-    "sqlite3": "^4.0.3"
+    "moment-duration-format": "^2.2.2",
+    "onecolor": "^3.1.0",
+    "relevant-urban": "^2.0.0",
+    "snekfetch": "^4.0.4",
+    "sqlite3": "^4.0.3",
+    "twemoji": "^11.2.0"
   },
   "devDependencies": {
     "eslint": "^5.8.0",
