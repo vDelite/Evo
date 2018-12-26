@@ -1,6 +1,7 @@
-exports.run = async (client, message, args, level) => {
+exports.run = async (client, message) => {
+  const time = (new Date()).getTime();
   const msg = await message.channel.send('Ping?');
-  msg.edit(`Pong! ${Math.round(client.ping)}ms.`);
+  msg.edit(`Pong! ${(new Date()).getTime() - time}ms.`);
 };
 
 exports.conf = {
@@ -9,6 +10,7 @@ exports.conf = {
   aliases: [],
   permLevel: 'User',
   hidden: false,
+  cooldown: 3,
 };
 
 exports.help = {
