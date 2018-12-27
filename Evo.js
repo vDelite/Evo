@@ -7,7 +7,7 @@ const Enmap = require('enmap');
 const EnmapLevel = require('enmap-level');
 const sqlite3 = require('sqlite3');
 
-const client = new Discord.Client({ autoReconnect: true, disableEveryone: true });
+const client = new Discord.Client({ autoReconnect: true, disableEveryone: true, fetchAllMembers: true })
 
 client.eventCache = {};
 client.db = new sqlite3.Database('data.db');
