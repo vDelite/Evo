@@ -9,7 +9,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
 
       let quote = new Discord.MessageEmbed()
         .setAuthor(msg.author.username, msg.author.avatarURL())
-        .setDescription(`[Jump to message](${msg.url})\n\nmsg.content`)
+        .setDescription(`[Jump to message](${msg.url})\n\n${msg.content}`)
         .setTimestamp(msg.createdAt)
         .setFooter(`#${msg.channel.name}`)
       message.channel.send(quote)
