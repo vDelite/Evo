@@ -23,7 +23,6 @@
     "emoji-aware": "^3.0.4",
     "enmap": "^4.3.3",
     "enmap-level": "^2.1.0",
-    "leveldown": "^4.0.1",
     "moment": "^2.22.2",
     "moment-duration-format": "^2.2.2",
     "onecolor": "^3.1.0",
