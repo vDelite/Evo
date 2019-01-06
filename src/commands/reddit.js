@@ -99,6 +99,7 @@ const Store = async (message, args, msg) => {
 };
 
 exports.run = async (client, message, args) => {
+  return message.channel.send('Not read yet, will be in future release');
   if (args.length === 0) await message.channel.send('**Usage** - reddit [subreddit]\nReturns recent random post from given subreddit.');
   const dis = client.emojis.get('472793529609879573');
   if (databases[args[0]] !== undefined) {
