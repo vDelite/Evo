@@ -1,4 +1,8 @@
-module.exports = (client) => {
+const db = require('./Database');
+
+const def = require('../config').defaultSettings;
+
+module.exports = async (client) => {
   /*
   Permissions
   */
@@ -20,13 +24,12 @@ module.exports = (client) => {
     return permlvl;
   };
 
-  client.getGuildSettings = (guild) => {
-    const def = client.config.defaultSettings;
+  client.getGuildSettings = async (guild) => {
     if (!guild) {
       return def;
     }
     const returns = {};
-    const overrides = client.settings.get(guild.id) || {};
+    const overrides = await db.fetchSettings(guild.id) || {};
     for (const key in def) {
       returns[key] = overrides[key] || def[key]
     }

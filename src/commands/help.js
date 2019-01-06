@@ -1,12 +1,12 @@
 const Disc = require('discord.js');
 
-exports.run = (client, message, args, level) => {
+exports.run = async (client, message, args, level) => {
   if (!args[0] || (parseInt(args[0]) && parseInt(args[0], 10) >= 1 && parseInt(args[0], 10) <= 50)) {
     if (args[1] === 'u') {
       level = 1;
     }
 
-    const settings = client.getGuildSettings(message.guild);
+    const settings = await client.getGuildSettings(message.guild);
     let page = Math.ceil(parseInt(args[0], 10));
 
     if (!page) page = 1;

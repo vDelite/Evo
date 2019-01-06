@@ -74,6 +74,8 @@ typings/
 # FuseBox cache
 .fusebox/
 
+# Visual studio code
+.vscode
 
 config.js
 data
