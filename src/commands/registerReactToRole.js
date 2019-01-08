@@ -19,7 +19,7 @@ exports.conf = {
 };
 
 exports.help = {
-  name: 'registerReactToRole',
+  name: 'registerreacttorole',
   category: 'Miscelaneous',
   description: '',
   usage: 'registerReactToRole messageId ...params[roleName, reactId]',

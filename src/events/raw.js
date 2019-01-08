@@ -9,19 +9,9 @@ module.exports = async (client, event) => {
 	const { d: data } = event;
 	const user = client.users.get(data.user_id);
 	const channel = client.channels.get(data.channel_id) || await user.createDM();
+	const message = await channel.messages.fetch(data.message_id);
+	const emojiKey = data.emoji.id ? data.emoji.id : data.emoji.name;
+	const reaction = message.reactions.get(emojiKey);
 
-	if (channel.messages.has(data.message_id)) {
-		const message = await channel.messages.fetch(data.message_id);
-		const emojiKey = (data.emoji.id) ? `${data.emoji.name}:${data.emoji.id}` : data.emoji.name;
-		const reaction = message.reactions.get(emojiKey);
-
-		client.emit(events[event.t], reaction, user);
-	}
-	else {
-		const message = await channel.messages.fetch(data.message_id);
-		const emojiKey = (data.emoji.id) ? `${data.emoji.name}:${data.emoji.id}` : data.emoji.name;
-		const reaction = message.reactions.get(emojiKey);
-
-		client.emit(events[event.t], reaction, user);
-	}
+	client.emit(events[event.t], reaction, user);
 };
