@@ -1,11 +1,16 @@
-var db = require('../modules/Database');
+const discord = require('discord.js');
+
+const db = require('../modules/Database');
 
 exports.run = async (client, message, args) => {
-  var s = {};
+  const s = {};
+
   for (let i = 1; i < args.length; i += 2) {
-    s[args[i]] = args[i + 1];
+    const emote = discord.Util.parseEmoji(args[i + 1]);
+    if (emote.id === null) message.reply('Default emotes are not supported.');
+    s[emote.id] = args[i];
   }
-  message.channel.send("Success");
+
   db.saveReactToRole(message.guild.id, args[0], JSON.stringify(s));
 };
 

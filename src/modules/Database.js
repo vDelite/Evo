@@ -10,7 +10,7 @@ class Database {
   async openDb() {
     this.db = await sqlite.open('./data.db');
     await this.prepeareTable('settings', 'CREATE TABLE "settings" ( `guild` TEXT, `prefix` TEXT, `modLogChannel` TEXT, `modRole` TEXT, `adminRole` TEXT, `systemNotice` INTEGER, `welcomeChannel` TEXT, `welcomeMessage` TEXT, `welcomeEnabled` INTEGER, `whitelistEnabled` INTEGER, `whitelistedCommands` TEXT, `enableAutomod` INTEGER )');
-    await this.prepeareTable('roleMessages', 'CREATE TABLE "roleMessages" ( `message` TEXT, `guild` TEXT, `roles` TEXT )');
+    await this.prepeareTable('roleMessages', 'CREATE TABLE "roleMessages" ( `guild` TEXT, `message` TEXT, `roles` TEXT )');
   }
 
   async prepeareTable(name, create) {
@@ -38,8 +38,10 @@ class Database {
 
   async fetchReactsToRoles(guildId, messageId) {
     const row = await this.db.get('SELECT * FROM roleMessages WHERE guild == ? AND message == ?', [guildId, messageId]);
+    if(row === undefined)
+      return false;
     const ret = {};
-    ret[row.message] = JSON.parse(row.roles);
+    return JSON.parse(row.roles);
     return ret;
   }
 
