@@ -4,6 +4,14 @@ const config = {
 
   token: '',
 
+  pg: { // pg db settings
+    user: '',
+    host: '',
+    database: '',
+    password: '',
+    port: 5432,
+  },
+
   dashboard: {
     oauthSecret: '',
     callbackURL: '',

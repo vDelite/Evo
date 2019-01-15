@@ -11,7 +11,7 @@ exports.run = async (client, message, args) => {
     s[emote.id] = args[i];
   }
 
-  db.saveReactToRole(message.guild.id, args[0], JSON.stringify(s));
+  db.saveReactToRole(message.guild.id, args[0], s);
 };
 
 exports.conf = {

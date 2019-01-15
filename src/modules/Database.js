@@ -1,6 +1,8 @@
-const sqlite = require('sqlite');
+const { Client } = require('pg');
 
 const logger = require('../util/Logger');
+
+const config = require('../config');
 
 class Database {
   constructor() {
@@ -8,45 +10,55 @@ class Database {
   }
 
   async openDb() {
-    this.db = await sqlite.open('./data.db');
-    await this.prepeareTable('settings', 'CREATE TABLE "settings" ( `guild` TEXT, `prefix` TEXT, `modLogChannel` TEXT, `modRole` TEXT, `adminRole` TEXT, `systemNotice` INTEGER, `welcomeChannel` TEXT, `welcomeMessage` TEXT, `welcomeEnabled` INTEGER, `whitelistEnabled` INTEGER, `whitelistedCommands` TEXT, `enableAutomod` INTEGER )');
-    await this.prepeareTable('roleMessages', 'CREATE TABLE "roleMessages" ( `guild` TEXT, `message` TEXT, `roles` TEXT )');
+    this.client = new Client(config.pg);
+    this.client.connect();
+    // probably should check if connection was successful, but idc
+    await this.prepeareTable('settings', `CREATE TABLE public.settings ( guild text, settings text ) WITH ( OIDS=FALSE ); ALTER TABLE public.settings OWNER TO ${config.pg.user}; `);
+    await this.prepeareTable('role_messages', `CREATE TABLE public.role_messages ( guild text, message text, roles text ) WITH ( OIDS=FALSE ); ALTER TABLE public.role_messages OWNER TO ${config.pg.user}; `);
   }
 
   async prepeareTable(name, create) {
-    const row = await this.db.get('SELECT name FROM sqlite_master WHERE name == ? AND type == "table"', [name]);
-    if (row === undefined) {
+    const res = await this.client.query('SELECT * FROM information_schema.tables WHERE table_schema = \'public\'  AND table_name = $1', [name]);
+    if (res.rows.length === 0) {
       try {
-        await this.db.run(create);
+        await this.client.query(create);
         logger.warn(`Created table ${name}`);
       } catch (e) {
-        logger.error(`Could not create table ${name}, check SQL create statement.`);
+        logger.error(`Could not create table ${name}, check SQL create statement: ${e.message}`);
       }
     }
   }
 
   async fetchSettings(id) {
-    return this.db.get('SELECT * FROM settings WHERE guild == ?', [id]);
+    const res = await this.client.query('SELECT * FROM settings WHERE guild = $1', [id]);
+    return res.rows.length > 0 ? JSON.parse(res.rows[0].settings) : {};
   }
 
-  async saveSettings(id, key, value) {
-    if (await this.db.get('SELECT * FROM settings WHERE guild == ? ', [id]) === undefined) {
-      await this.db.run('INSERT INTO settings VALUES (?,?,?,?,?,?,?,?,?,?,?,?)', [id, null, null, null, null, null, null, null, null, null, null, null]);
+  async saveSettings(id, key, values) {
+    const curentSettings = await this.client.query('SELECT * FROM settings WHERE guild = $1 ', [id]);
+    if (curentSettings.rows.length === 0) {
+      const toSave = {};
+      toSave[key] = values[0];
+      return this.client.query('INSERT INTO settings (guild, settings) VALUES ($1, $2)', [id, JSON.stringify(toSave)]);
     }
-    return this.db.exec(`UPDATE settings SET ${key}='${value}' WHERE guild==${id}`); // SQL injection here, this would not be problem if ? and ...params[] were used, but that does not work for some reason..
+    curentSettings.rows[0][key] = values[0];
+    return this.client.query('UPDATE settings SET settings = $1 WHERE guild = $2', [JSON.stringify(curentSettings.rows[0]), id]);
   }
 
   async fetchReactsToRoles(guildId, messageId) {
-    const row = await this.db.get('SELECT * FROM roleMessages WHERE guild == ? AND message == ?', [guildId, messageId]);
-    if(row === undefined)
-      return false;
-    const ret = {};
-    return JSON.parse(row.roles);
-    return ret;
+    const res = await this.client.query('SELECT * FROM role_messages WHERE guild = $1 AND message = $2', [guildId, messageId]);
+    if (res.rows.length === 0) return false;
+    return JSON.parse(res.rows[0].roles);
   }
 
-  async saveReactToRole(guild, message, reactsToRoles) {
-    this.db.run('INSERT INTO roleMessages VALUES (?,?,?)', [guild, message, reactsToRoles]);
+  async saveReactToRole(guildId, messageId, reactsToRoles) {
+    const res = await this.client.query('SELECT * FROM role_messages WHERE guild = $1 AND message = $2', [guildId, messageId]);
+    if (res.rows.length === 0) return this.client.query('INSERT INTO role_messages (guild, message, roles) VALUES ($1, $2, $3)', [guildId, messageId, JSON.stringify(reactsToRoles)]);
+
+    const currentReactsToRoles = JSON.parse(res.rows[0].roles)
+    for (const key in reactsToRoles) if (reactsToRoles.hasOwnProperty(key)) currentReactsToRoles[key] = reactsToRoles[key];
+
+    this.client.query('UPDATE role_messages SET roles = $1 WHERE guild = $2 AND message = $3', [JSON.stringify(currentReactsToRoles), guildId, messageId]);
   }
 }
 

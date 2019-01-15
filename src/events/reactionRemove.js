@@ -8,6 +8,8 @@ module.exports = async (client, message, reaction, user) => {
   if (settings.hasOwnProperty(reaction)) {
     const role = message.guild.roles.find(role => role.name === settings[reaction]);
 
+    if (role === undefined) return;
+
     message.guild.members.fetch(user).then((member) => {
       if (member.roles.find(r => r.id === role.id)) {
         member.roles.remove(role).then(member => member.send(new MessageEmbed()
